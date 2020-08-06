@@ -24,6 +24,7 @@
 		<plugin.surefire.version>2.22.2</plugin.surefire.version>
 		<plugin.failsafe.version>2.22.2</plugin.failsafe.version>
 		<plugin.jacoco.version>0.8.5</plugin.jacoco.version>
+		<plugin.jib.version>2.5.0</plugin.jib.version>
 
 		<plugin.jacoco.unit.tests.dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</plugin.jacoco.unit.tests.dataFile>
 		<plugin.jacoco.unit.tests.reportOutputDirectory>${project.reporting.outputDirectory}/jacoco-ut</plugin.jacoco.unit.tests.reportOutputDirectory>
@@ -148,6 +149,24 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>${plugin.jib.version}</version>
+				<configuration>
+					<to>
+						<image>users-management-api</image>
+					</to>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>dockerBuild</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
