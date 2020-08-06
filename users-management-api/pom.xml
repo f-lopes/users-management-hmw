@@ -17,6 +17,8 @@
 
 	<properties>
 		<java.version>11</java.version>
+
+		<plugin.spotless.version>2.0.1</plugin.spotless.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +55,37 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.diffplug.spotless</groupId>
+					<artifactId>spotless-maven-plugin</artifactId>
+					<version>${plugin.spotless.version}</version>
+					<configuration>
+						<java>
+							<trimTrailingWhitespace/>
+							<googleJavaFormat>
+								<version>1.8</version>
+								<style>AOSP</style>
+							</googleJavaFormat>
+							<removeUnusedImports/>
+							<importOrder>
+								<order>java,javax,org,com</order>
+							</importOrder>
+						</java>
+					</configuration>
+					<executions>
+						<execution>
+							<id>spotless-format</id>
+							<phase>process-sources</phase>
+							<goals>
+								<goal>apply</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -61,4 +94,20 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.diffplug.spotless</groupId>
+						<artifactId>spotless-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
