@@ -19,6 +19,14 @@
 		<java.version>11</java.version>
 
 		<plugin.spotless.version>2.0.1</plugin.spotless.version>
+		<plugin.surefire.version>2.22.2</plugin.surefire.version>
+		<plugin.failsafe.version>2.22.2</plugin.failsafe.version>
+		<plugin.jacoco.version>0.8.5</plugin.jacoco.version>
+
+		<plugin.jacoco.unit.tests.dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</plugin.jacoco.unit.tests.dataFile>
+		<plugin.jacoco.unit.tests.reportOutputDirectory>${project.reporting.outputDirectory}/jacoco-ut</plugin.jacoco.unit.tests.reportOutputDirectory>
+		<plugin.jacoco.integration.tests.dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</plugin.jacoco.integration.tests.dataFile>
+		<plugin.jacoco.integration.tests.reportOutputDirectory>${project.reporting.outputDirectory}/jacoco-it</plugin.jacoco.integration.tests.reportOutputDirectory>
 	</properties>
 
 	<dependencies>
@@ -84,12 +92,53 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${plugin.jacoco.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${plugin.surefire.version}</version>
+					<configuration>
+						<argLine>${jacoco.agent.surefire.argLine}</argLine>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${plugin.failsafe.version}</version>
+					<configuration>
+						<argLine>${jacoco.agent.failsafe.argLine}</argLine>
+					</configuration>
+					<executions>
+						<execution>
+							<id>integration-test</id>
+							<phase>integration-test</phase>
+							<goals>
+								<goal>integration-test</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>verify</id>
+							<phase>post-integration-test</phase>
+							<goals>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
@@ -105,6 +154,69 @@
 					<plugin>
 						<groupId>com.diffplug.spotless</groupId>
 						<artifactId>spotless-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>code-coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>pre-unit-test</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${plugin.jacoco.unit.tests.dataFile}</destFile>
+									<propertyName>jacoco.agent.surefire.argLine</propertyName>
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-unit-test</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/*.jar</exclude>
+									</excludes>
+									<dataFile>${plugin.jacoco.unit.tests.dataFile}</dataFile>
+									<outputDirectory>${plugin.jacoco.unit.tests.reportOutputDirectory}</outputDirectory>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>pre-integration-test</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${plugin.jacoco.integration.tests.dataFile}</destFile>
+									<propertyName>jacoco.agent.failsafe.argLine</propertyName>
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-integration-test</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/*.jar</exclude>
+									</excludes>
+									<dataFile>${plugin.jacoco.integration.tests.dataFile}</dataFile>
+									<outputDirectory>${plugin.jacoco.integration.tests.reportOutputDirectory}</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
