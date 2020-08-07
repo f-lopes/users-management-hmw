@@ -1,0 +1,20 @@
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    urls:
+      - url: ../v3/api-docs/users.openapi.yaml
+        name: Users
+    deepLinking: true
+    defaultModelsExpandDepth: 0
+    defaultModelExpandDepth: 0
+    defaultModelRendering: model
+    displayRequestDuration: true
+    docExpansion: list
+    filter:
+    operationsSorter: alpha
+    tagsSorter: alpha
+    showExtensions: true
+    supportedSubmitMethods: ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
+    disable-swagger-default-url: true
+    validatorUrl:

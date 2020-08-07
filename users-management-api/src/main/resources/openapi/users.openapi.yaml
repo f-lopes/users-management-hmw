@@ -1,0 +1,15 @@
+openapi: 3.0.1
+info:
+  title: Users management REST API
+  description: Users management REST API
+  contact:
+    name: Maintainer
+    url: www.florianlopes.io
+    email: florian.lopes@outlook.com
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/
+    description: "local server"
+  - url: http://api.localhost/
+    description: "development server"
+paths:

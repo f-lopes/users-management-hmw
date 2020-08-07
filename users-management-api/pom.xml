@@ -19,6 +19,7 @@
 		<java.version>11</java.version>
 
 		<archunit.version>0.14.1</archunit.version>
+		<springdoc-openapi-ui.version>1.4.3</springdoc-openapi-ui.version>
 
 		<plugin.spotless.version>2.0.1</plugin.spotless.version>
 		<plugin.surefire.version>2.22.2</plugin.surefire.version>
@@ -36,6 +37,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc-openapi-ui.version}</version>
 		</dependency>
 
 		<!-- Tools -->
