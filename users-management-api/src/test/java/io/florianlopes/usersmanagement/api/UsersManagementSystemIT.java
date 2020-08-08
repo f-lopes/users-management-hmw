@@ -38,10 +38,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
+import io.florianlopes.usersmanagement.api.common.web.dto.PageDto;
 import io.florianlopes.usersmanagement.api.users.domain.Metrics;
 import io.florianlopes.usersmanagement.api.users.domain.listener.event.UserCreationSuccessEvent;
+import io.florianlopes.usersmanagement.api.users.persistence.entity.UserDocument;
 import io.florianlopes.usersmanagement.api.users.persistence.repository.UserRepository;
 import io.florianlopes.usersmanagement.api.users.web.dto.v1.CreateUserRequest;
+import io.florianlopes.usersmanagement.api.users.web.dto.v1.UserDto;
 import io.micrometer.core.instrument.Statistic;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -118,6 +121,27 @@ class UsersManagementSystemIT {
                 usersCreationSuccessMetric.getBody().getMeasurements().get(0);
         assertThat(metricMeasurement.getStatistic()).isEqualTo(Statistic.COUNT);
         assertThat(metricMeasurement.getValue()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("GET - /v1/users")
+    void getRequestShouldRetrieveUsers() {
+        final UserDocument savedUser =
+                this.userRepository.insert(
+                        new UserDocument("John", "Doe", "john.doe@email.com", "test"));
+
+        assumeThat(this.userRepository.count()).isGreaterThan(0);
+
+        final ResponseEntity<PageDto<UserDto>> pageDtoResponseEntity =
+                this.testRestTemplate.exchange(
+                        USERS_ENDPOINTS,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<PageDto<UserDto>>() {});
+
+        assertThat(pageDtoResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(pageDtoResponseEntity.getBody()).isNotNull();
+        assertThat(pageDtoResponseEntity.getBody().getItems()).hasSizeGreaterThan(0);
     }
 
     private void stupIpApiResponseForLocalIP() throws IOException {

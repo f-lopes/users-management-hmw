@@ -31,6 +31,19 @@ paths:
       responses:
         201:
           description: "User created"
+    get:
+      tags:
+        - Users
+      summary: Retrieve all Users
+      description: "Retrieve all Users"
+      operationId: "getUsers"
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageOfUser'
 components:
   schemas:
     User:
@@ -62,3 +75,54 @@ components:
         - "password"
         - "firstName"
         - "lastName"
+    Order:
+      type: object
+      properties:
+        property:
+          type: string
+          description: The property on which the data is sorted
+        direction:
+          type: string
+          description: The sort direction (ASC|DESC)
+          example: ASC
+          enum:
+            - ASC
+            - DESC
+      description: Sort criteria applied to this request
+    PageOfUser:
+      type: object
+      properties:
+        items:
+          type: array
+          description: List of users
+          items:
+            $ref: '#/components/schemas/User'
+        totalPages:
+          type: integer
+          description: Total number of available pages
+          format: int32
+        totalItems:
+          type: integer
+          description: Total number of available items (potentially split across many pages)
+          format: int64
+        nbItems:
+          type: integer
+          description: Number of items in this page
+          format: int32
+        pageSize:
+          type: integer
+          description: Number of items per page
+          format: int32
+        pageNumber:
+          type: integer
+          description: Number of this page
+          format: int32
+        sort:
+          type: array
+          description: Sort criteria applied to this request
+          items:
+            $ref: '#/components/schemas/Order'
+        isFirstPage:
+          type: boolean
+        isLastPage:
+          type: boolean

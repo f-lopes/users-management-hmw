@@ -1,16 +1,18 @@
 package io.florianlopes.usersmanagement.api.architecture;
 
+import static com.tngtech.archunit.library.Architectures.onionArchitecture;
+import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
+import static io.florianlopes.usersmanagement.api.architecture.ArchitectureTests.BASE_PACKAGES;
+
+import java.util.regex.Pattern;
+
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
-import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 import com.tngtech.archunit.library.dependencies.SliceAssignment;
 import com.tngtech.archunit.library.dependencies.SliceIdentifier;
-import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
-import static io.florianlopes.usersmanagement.api.architecture.ArchitectureTests.BASE_PACKAGES;
-import java.util.regex.Pattern;
 
 @AnalyzeClasses(packages = BASE_PACKAGES, importOptions = ImportOption.DoNotIncludeTests.class)
 public class ArchitectureTests {

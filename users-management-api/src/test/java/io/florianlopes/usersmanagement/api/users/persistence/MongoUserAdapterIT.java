@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import io.florianlopes.usersmanagement.api.users.domain.model.User;
+import io.florianlopes.usersmanagement.api.users.persistence.entity.UserDocument;
 import io.florianlopes.usersmanagement.api.users.persistence.mapper.PersistenceUserMapper;
 import io.florianlopes.usersmanagement.api.users.persistence.mapper.UserMapper;
 import io.florianlopes.usersmanagement.api.users.persistence.repository.UserRepository;
@@ -45,5 +48,18 @@ class MongoUserAdapterIT {
         assertThat(createdUser.getPassword()).isEqualTo("test");
 
         assertThat(this.userRepository.count()).isEqualTo(1);
+    }
+
+    @Test
+    void getAllUsersWithPageOfOneShouldReturnOneUser() {
+        this.userRepository.deleteAll();
+        this.userRepository.insert(new UserDocument("John", "Doe", "john.doe@email.com", "test"));
+        this.userRepository.insert(new UserDocument("John", "Doe", "john.doe@email.com", "test"));
+
+        Assumptions.assumeThat(this.userRepository.count()).isEqualTo(2);
+
+        final Page<User> users = this.mongoUserAdapter.getAllUsers(PageRequest.of(1, 1));
+
+        assertThat(users.getSize()).isEqualTo(1);
     }
 }
