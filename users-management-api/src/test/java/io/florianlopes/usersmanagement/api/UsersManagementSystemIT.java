@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.AfterAll;
@@ -32,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -164,6 +166,36 @@ class UsersManagementSystemIT {
         assertThat(pageDtoResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(pageDtoResponseEntity.getBody()).isNotNull();
         assertThat(pageDtoResponseEntity.getBody().getId()).isEqualTo(savedUser.getId());
+    }
+
+    @Test
+    @DisplayName("GET - /v1/users/search?firstName=&lastName=&email=")
+    void searchRequestShouldRetrieveUsers() {
+        this.userRepository.deleteAll();
+        final UserDocument firstUser =
+                this.userRepository.insert(
+                        new UserDocument("John", "Doe", "john.doe@email.com", "test"));
+        this.userRepository.insert(
+                new UserDocument("FirstName", "LastName", "firstName.lastName@email.com", "test"));
+
+        assumeThat(this.userRepository.count()).isEqualTo(2);
+
+        final String searchUsersUrl =
+                UriComponentsBuilder.fromPath(USERS_ENDPOINTS + "/search")
+                        .queryParam("firstName", "John")
+                        .toUriString();
+        final ResponseEntity<PageDto<UserDto>> pageDtoResponseEntity =
+                this.testRestTemplate.exchange(
+                        searchUsersUrl,
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<PageDto<UserDto>>() {});
+
+        assertThat(pageDtoResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(pageDtoResponseEntity.getBody()).isNotNull();
+        final List<UserDto> items = pageDtoResponseEntity.getBody().getItems();
+        assertThat(items).hasSize(1);
+        assertThat(items.get(0)).isEqualToComparingFieldByField(firstUser);
     }
 
     private void stupIpApiResponseForLocalIP() throws IOException {

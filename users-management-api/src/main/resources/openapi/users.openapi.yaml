@@ -66,6 +66,29 @@ paths:
         404:
           description: User not found
           content: {}
+  /v1/users/search:
+    get:
+      tags:
+        - Users
+      summary: Search users by name and/or email address
+      operationId: getAlerts
+      parameters:
+        - name: firstName
+          in: query
+          required: false
+        - name: lastName
+          in: query
+          required: false
+        - name: email
+          in: query
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PageOfUser'
 components:
   schemas:
     User:
