@@ -1,0 +1,47 @@
+version: "3.3"
+services:
+
+  proxy:
+    image: "traefik:v2.2"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  api:
+    image: "users-management-api"
+    environment:
+      - MONGODB_URI=mongodb://db/test
+      - RABBIT_MQ_HOST=broker
+      - APP_USER_CREATION_IP_CHECK_ENABLED=false # Set this environment variable to true to enable IP check on user creation
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
+      - "traefik.example-node.frontend.passHostHeader=true"
+      - "traefik.http.middlewares.cross-origin.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cross-origin.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,HEAD"
+      - "traefik.http.middlewares.cross-origin.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cross-origin.headers.accessControlAllowHeaders=*"
+      - "traefik.http.routers.api.middlewares=cross-origin"
+
+  db:
+    image: "mongo:3.6.19-xenial"
+
+  broker:
+    image: "rabbitmq:3.8.6"
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=test
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.queue.rule=Host(`broker.localhost`)"
+      - "traefik.http.routers.queue.entrypoints=web"
+      - "traefik.http.services.queue.loadbalancer.server.port=15672"
