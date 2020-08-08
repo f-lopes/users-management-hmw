@@ -88,3 +88,48 @@ You can view Swagger-based API documentation at the following URL:
 `http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config`
 
 Or `http://api.localhost/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config` if you are running the API through its Docker container.
+
+### Metrics
+
+This application exposes some business metrics:
+- Number of successful user creations: `/actuator/metrics/users.creation.success`
+- Number of unsuccessful user creations: `/actuator/metrics/users.creation.failure`
+
+
+### Architecture
+
+![Architecture diagram](users-management-api/docs/architecture-diagram.png "Architecture diagram")
+
+
+This project follows the `screaming` architecture: package by feature / functional area / bounded context
+    
+Advantages:
+- Its structure is easy to read (screaming architecture, tells what it does), easy to search for a given use case
+- Favors low coupling and high cohesion (bounded context): could easily be migrated to microservices later
+- Allows working in parallel: each developer can work on its own feature; no merge conflicts
+- SRP (Single Responsibility Principle): updating one feature doesn't interfer with other classes: minors regressions risks...
+
+Disadvantages:
+- Can be complex/difficult at first glance (a lot of packages/classes)
+- Lot of mapping / adapters: can be seen as a lot of duplication, however it permits high isolation
+
+#### Tests
+Architecture tests are implemented by ArchUnit (see `ArchitectureTests` and `CodingRulesTests`)
+
+#### Mapping strategy
+
+Due to its architecture, this project extensively uses mapping through layers with `MapStruct`.
+As it's a simple CRUD project, mapping might have been skipped as it needs a lot of boilerplate code.
+
+Such a mapping strategy can bring the following advantages:
+- SRP (Single Responsibility Principle): a class should only have one reason to change
+- No single entity class containing ORM/JSON/XML annotations
+- Clean domain object
+
+### Database choice
+
+`MongoDB`
+
+As there is only one entity involved in this small application, there is no need to use a relational DB.
+- Schema can easily evolve
+- High throughput
