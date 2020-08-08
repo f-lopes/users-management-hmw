@@ -1,4 +1,4 @@
-package io.florianlopes.usersmanagement.api.users.web;
+package io.florianlopes.usersmanagement.api.users.web.controller;
 
 import java.io.IOException;
 

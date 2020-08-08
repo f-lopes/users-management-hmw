@@ -13,3 +13,52 @@ servers:
   - url: http://api.localhost/
     description: "development server"
 paths:
+  /v1/users/:
+    post:
+      tags:
+        - Users
+      summary: "Create a User"
+      description: "Create a User"
+      operationId: "createUser"
+
+      requestBody:
+        description: "The user to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        201:
+          description: "User created"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    CreateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+      required:
+        - "email"
+        - "password"
+        - "firstName"
+        - "lastName"

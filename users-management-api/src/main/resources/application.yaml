@@ -1,3 +1,14 @@
+app:
+  user:
+    creation:
+      authorizedCountries: "FR"
+      ip:
+        check:
+          enabled: false
+  ipapi:
+    base:
+      url: https://ipapi.co
+
 springdoc:
   api-docs:
     enabled: false
@@ -18,3 +29,30 @@ springdoc:
     supportedSubmitMethods: ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
     disable-swagger-default-url: true
     validatorUrl:
+
+database:
+  name: users-management
+
+# Only enable MongoDB transactions in a real production environment as transactions are not supported without a replica set
+mongo:
+  transactions:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost/test}
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST:localhost}
+
+messaging:
+  successfulCreatedUsersQueueName: users.creation.success
+  unsuccessfulCreatedUsersQueueName: users.creation.failure
+  directExchangeName: direct-exchange
+  successfulCreatedUsersRoutingKey: users.creation.success
+  unsuccessfulCreatedUsersRoutingKey: users.creation.failure

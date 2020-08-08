@@ -1,0 +1,35 @@
+app:
+  user:
+    creation:
+      authorizedCountries: "FR"
+      ip:
+        check:
+          enabled: true
+  ipapi:
+    base:
+      url: https://ipapi.co
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}
+
+embedded:
+  containers:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+
+database:
+  name: users-management
+
+messaging:
+  successfulCreatedUsersQueueName: users.creation.success
+  unsuccessfulCreatedUsersQueueName: users.creation.failure
+  directExchangeName: direct-exchange
+  successfulCreatedUsersRoutingKey: users.creation.success
+  unsuccessfulCreatedUsersRoutingKey: users.creation.failure
