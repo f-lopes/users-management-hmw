@@ -1,5 +1,7 @@
 package io.florianlopes.usersmanagement.api.users.persistence;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -31,5 +33,11 @@ class MongoUserAdapter implements UserAdapter {
     public Page<User> getAllUsers(Pageable pageable) {
         final Page<UserDocument> userDocuments = this.userRepository.findAll(pageable);
         return userDocuments.map(this.userMapper::asUser);
+    }
+
+    @Override
+    public Optional<User> getUserById(String id) {
+        final Optional<UserDocument> userDocument = this.userRepository.findById(id);
+        return userDocument.map(this.userMapper::asUser);
     }
 }

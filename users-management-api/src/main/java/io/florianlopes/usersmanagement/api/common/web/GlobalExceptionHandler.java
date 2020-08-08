@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import io.florianlopes.usersmanagement.api.common.web.dto.ErrorDto;
 import io.florianlopes.usersmanagement.api.common.web.dto.ValidationErrorDto;
+import io.florianlopes.usersmanagement.api.users.domain.exception.ResourceNotFoundException;
 import io.florianlopes.usersmanagement.api.users.domain.exception.UnauthorizedUserCreationException;
 import io.florianlopes.usersmanagement.api.users.domain.exception.UserCreationException;
 
@@ -93,6 +94,19 @@ class GlobalExceptionHandler {
                                 httpStatus.value(),
                                 getRequestPath(request),
                                 unauthorizedUserCreationException.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(
+            ResourceNotFoundException resourceNotFoundException, HttpServletRequest request) {
+        LOGGER.info("Resolving exception", resourceNotFoundException);
+        final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(httpStatus)
+                .body(
+                        new ErrorDto(
+                                httpStatus.value(),
+                                getRequestPath(request),
+                                resourceNotFoundException.getMessage()));
     }
 
     private List<ValidationErrorDto.ValidationError> getValidationErrors(

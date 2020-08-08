@@ -144,6 +144,28 @@ class UsersManagementSystemIT {
         assertThat(pageDtoResponseEntity.getBody().getItems()).hasSizeGreaterThan(0);
     }
 
+    @Test
+    @DisplayName("GET - /v1/users/{id}")
+    void getRequestShouldRetrieveUserById() {
+        final UserDocument savedUser =
+                this.userRepository.insert(
+                        new UserDocument("John", "Doe", "john.doe@email.com", "test"));
+
+        assumeThat(savedUser.getId()).isNotBlank();
+        assumeThat(this.userRepository.count()).isGreaterThan(0);
+
+        final ResponseEntity<UserDto> pageDtoResponseEntity =
+                this.testRestTemplate.exchange(
+                        USERS_ENDPOINTS + "/" + savedUser.getId(),
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<UserDto>() {});
+
+        assertThat(pageDtoResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(pageDtoResponseEntity.getBody()).isNotNull();
+        assertThat(pageDtoResponseEntity.getBody().getId()).isEqualTo(savedUser.getId());
+    }
+
     private void stupIpApiResponseForLocalIP() throws IOException {
         wireMockServer.stubFor(
                 get(urlPathEqualTo("/" + "127.0.0.1" + "/json/"))

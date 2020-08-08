@@ -44,6 +44,28 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/PageOfUser'
+  '/v1/users/{id}':
+    get:
+      tags:
+        - Users
+      summary: Retrieve a user by ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: User not found
+          content: {}
 components:
   schemas:
     User:
