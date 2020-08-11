@@ -6,11 +6,6 @@
 
 ### Build 
 
-Using Docker:
-```bash
-docker run --rm -it -v ~/.m2:/root/.m2 -v $(pwd):/workspace -w /workspace maven:3.6.3-jdk-11 mvn clean package
-```
-
 ```bash
 ./mvnw clean package
 ```
@@ -61,14 +56,22 @@ Edit your `hosts` file (`/etc/hosts`):
 
 #### Start containers
 
-1. Ensure the `users-management-api` Docker image has been built, run `mvn package` in the `users-management-api` directory, if needed
+1. Build the `users-management-api` Docker image (in the `users-management-api` directory):
+```bash
+./mvnw clean package
+```
 
-2.
+Set the `APP_USER_CREATION_IP_CHECK_ENABLED` environment variable to `false` to disable IP check on user creation (`docker-compose.yml`)
+
+2. Build the `users-management-ui` Docker image (in the `users-management-ui` directory):
+```bash
+npm install && npm run build-prod && npm run docker:build
+```
+
+3. Run
 ```bash
 docker-compose up -d
 ```
-
-3. Set the `APP_USER_CREATION_IP_CHECK_ENABLED` environment variable to `false` to disable IP check on user creation
 
 This `docker-compose.yml` file starts 5 containers:
 - Traefik proxy
@@ -77,9 +80,9 @@ This `docker-compose.yml` file starts 5 containers:
 - RabbitMQ broker
 - UI
 
-- Access the UI at `http://localhost`
+4. Access the UI at `http://localhost`
 
-- Access the API documentation at `http://api.localhost/swagger-ui.html`
+5. Access the API documentation at `http://api.localhost/swagger-ui.html`
 
 You can access the RabbitMQ dashboard at `http://broker.localhost`
 
@@ -142,7 +145,7 @@ As there is only one entity involved in this small application, there is no need
 
 2. Build Angular application:
 ```bash
-npm install && start build-prod
+npm install && npm run build-prod
 ```
 
 3. Don't forget to set the `APP_USER_CREATION_IP_CHECK_ENABLED` environment variable to `false` if you want to disable IP check on user creation (`docker-compose.yml`)
