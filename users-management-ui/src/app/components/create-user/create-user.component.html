@@ -1,0 +1,46 @@
+<!-- main app container -->
+<div class="card m-3">
+  <h5 class="card-header">Create user</h5>
+  <div class="card-body">
+    <form [formGroup]="createUserForm" (ngSubmit)="onSubmit()">
+      <div class="form-group col-3">
+        <label>First Name</label>
+        <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': formSubmitted && createUserForm.controls.firstName.errors }"/>
+        <div *ngIf="formSubmitted && createUserForm.controls.firstName.errors" class="invalid-feedback">
+          <div *ngIf="createUserForm.controls.firstName.errors.required">First Name is required</div>
+        </div>
+      </div>
+      <div class="form-group col-3">
+        <label>Last Name</label>
+        <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': formSubmitted && createUserForm.controls.lastName.errors }"/>
+        <div *ngIf="formSubmitted && createUserForm.controls.lastName.errors" class="invalid-feedback">
+          <div *ngIf="createUserForm.controls.lastName.errors.required">Last Name is required</div>
+        </div>
+      </div>
+      <div class="form-group col-3">
+        <label>Email</label>
+        <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': formSubmitted && createUserForm.controls.email.errors }"/>
+        <div *ngIf="formSubmitted && createUserForm.controls.email.errors" class="invalid-feedback">
+          <div *ngIf="createUserForm.controls.email.errors.required">Email is required</div>
+          <div *ngIf="createUserForm.controls.email.errors.email">Email must be a valid email address</div>
+        </div>
+      </div>
+      <div class="form-row col-5">
+        <div class="form-group col-5">
+          <label>Password</label>
+          <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': formSubmitted && createUserForm.controls.password.errors }"/>
+          <div *ngIf="formSubmitted && createUserForm.controls.password.errors" class="invalid-feedback">
+            <div *ngIf="createUserForm.controls.password.errors.required">Password is required</div>
+            <div *ngIf="createUserForm.controls.password.errors.minlength">Password must be at least 6 characters</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button *ngIf="isLoading == false" class="btn btn-primary mr-1">Add user</button>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
+        <button class="btn btn-secondary" type="reset" (click)="onReset()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
