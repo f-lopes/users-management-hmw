@@ -1,6 +1,11 @@
 # High-level system overview
 ![High-level system overview](users-management-api/docs/system-overview.png "High-level system overview")
 
+## Requirements
+- Java 11+
+- Maven 3+
+- Docker / docker-compose
+- node/npm
 
 ## API
 
