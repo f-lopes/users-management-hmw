@@ -32,6 +32,17 @@ services:
       - "traefik.http.middlewares.cross-origin.headers.accessControlAllowHeaders=*"
       - "traefik.http.routers.api.middlewares=cross-origin"
 
+  ui:
+    image: "users-management-ui"
+    build:
+      context: users-management-ui/
+      dockerfile: docker/Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui.rule=Host(`localhost`)"
+      - "traefik.http.services.ui.loadbalancer.server.port=80"
+      - "traefik.http.routers.ui.entrypoints=web"
+
   db:
     image: "mongo:3.6.19-xenial"
 

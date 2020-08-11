@@ -70,11 +70,12 @@ docker-compose up -d
 
 3. Set the `APP_USER_CREATION_IP_CHECK_ENABLED` environment variable to `false` to disable IP check on user creation
 
-This `docker-compose.yml` file starts 4 containers:
+This `docker-compose.yml` file starts 5 containers:
 - Traefik proxy
 - REST API server
 - MongoDB
 - RabbitMQ broker
+- UI
 
 - Access the UI at `http://localhost`
 
@@ -107,11 +108,11 @@ Advantages:
 - Its structure is easy to read (screaming architecture, tells what it does), easy to search for a given use case
 - Favors low coupling and high cohesion (bounded context): could easily be migrated to microservices later
 - Allows working in parallel: each developer can work on its own feature; no merge conflicts
-- SRP (Single Responsibility Principle): updating one feature doesn't interfer with other classes: minors regressions risks...
+- SRP (Single Responsibility Principle): updating one feature doesn't interfere with other classes: minors regressions risks
 
 Disadvantages:
 - Can be complex/difficult at first glance (a lot of packages/classes)
-- Lot of mapping / adapters: can be seen as a lot of duplication, however it permits high isolation
+- Lot of mapping / adapters: can be seen as a lot of duplication, however, it permits high isolation
 
 #### Tests
 Architecture tests are implemented by ArchUnit (see `ArchitectureTests` and `CodingRulesTests`)
@@ -133,3 +134,27 @@ Such a mapping strategy can bring the following advantages:
 As there is only one entity involved in this small application, there is no need to use a relational DB.
 - Schema can easily evolve
 - High throughput
+
+
+## UI
+
+1. Set proper API URL in `src/app/services/user.service.ts` file (`l.4`) depending on your run configuration (`http://localhost:8080` or `http://api.localhost` using Docker)
+
+2. Build Angular application:
+```bash
+npm install && start build-prod
+```
+
+3. Don't forget to set the `APP_USER_CREATION_IP_CHECK_ENABLED` environment variable to `false` if you want to disable IP check on user creation (`docker-compose.yml`)
+
+4. Build `users-management-ui` Docker image (you can also let `docker-compose` build it by adding the `--build` flag to the `docker-compose up` command):
+```bash
+npm run docker:build
+```
+
+5. Run:
+```bash
+docker-compose up -d
+```
+
+Go to `http://localhost`
